@@ -2,10 +2,8 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-import swisseph as swe
 from datetime import datetime
 import yfinance as yf
-import pandas_ta as ta
 import plotly.graph_objs as go
 
 # --- 1. Загрузка астрологических данных ---
@@ -23,7 +21,7 @@ def stock_par(tick_nm, start_dt='2020-01-01', end_dt=datetime.today()):
     data['Date'] = data['Date'].dt.tz_localize(None)
     data['log_return'] = np.log(data['Close'] / data['Close'].shift(1))
     data['cumulative_return'] = data['log_return'].fillna(0).cumsum().apply(np.exp)
-    data['EMA_100'] = ta.ema(data['Close'], length=100)
+    data['EMA_100'] = data['Close'].ewm(span=100, adjust=False).mean()
     return data
 
 # --- 3. Интерфейс выбора тикера ---
